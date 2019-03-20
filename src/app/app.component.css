@@ -1,0 +1,12 @@
+ .active{
+ 	background-color: lightpink;
+ }
+
+button :focus{
+ 	outline: none!important;
+ }
+
+ /*NOT WORKING*/
+ .mat-stroked-button ::ng-deep{
+ 	transition: none!important;
+ }
