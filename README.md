@@ -14,4 +14,15 @@ The grid and the learned policy can be visualized.
 
 ![Settings panel](rl-grid-vis.png)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.5, and visualization uses [roughjs](https://roughjs.com/).
+------
+
+This project was generated with [Angular 7](https://github.com/angular/angular-cli), and visualization uses [roughjs](https://roughjs.com/).
+
+Build dependencies with:
+```
+npm install
+```
+then run with
+```
+ng serve
+```
