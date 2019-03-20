@@ -1,11 +1,13 @@
 
 <router-outlet></router-outlet>
 
-<p> Grid linear size: <input type='number' [(ngModel)]='size'> </p>
-<p> Number of treats: <input type='number' [(ngModel)]='ntreats'> </p>
-<p> Number of mines: <input type='number' [(ngModel)]='nmines'> </p>
-<p> Learning rate: <input type='number' [(ngModel)]='learningRate'> </p>
-<p> Exploration-exploitation ε: <input type='number' [(ngModel)]='epsilon'> </p>
+<h2> Grid walker (RL educated) </h2>
+<p> Grid linear size: <input type='number' min='3' (keydown.enter)='generateWorld()' [(ngModel)]='size'> </p>
+<p> Number of treats: <input type='number' min='1' (keydown.enter)='generateWorld()' [(ngModel)]='ntreats'> </p>
+<p> Number of mines: <input type='number' min='1' (keydown.enter)='generateWorld()' [(ngModel)]='nmines'> </p>
+<p> Learning rate: <input type='number' (keydown.enter)='generateWorld()' [(ngModel)]='learningRate'> </p>
+<p> Exploration-exploitation ε: <input type='number' (keydown.enter)='generateWorld()' [(ngModel)]='epsilon'> </p>
+<p> Discount rate: <input type='number' (keydown.enter)='generateWorld()' [(ngModel)]='gamma'> </p>
 <p>
 <button mat-stroked-button (click)='generateWorld()'> Generate </button>
 <button mat-stroked-button (click)='trainMode()'> Train </button>

@@ -20,8 +20,8 @@ export class DrawBoxComponent implements OnInit {
 	@Input('colormap') cm_name = 'density';
 	n_rows:number;
 	n_cols:number;
-	canvas_width:number = 900;
-	canvas_height:number = 900;
+	canvas_width:number = 700;
+	canvas_height:number = 700;
 	margin:number = 10;
 	n_shades = 10;
 	box_width:number;
@@ -127,8 +127,10 @@ export class DrawBoxComponent implements OnInit {
 				// 	fillWeight: 1.5,
 				// 	fill: cm_array[i][j] });
 				// if ( ([+i,+j] as number[] != this.mine_position) && ([+i,+j] as number[] != this.treat_position)){
+				if ( this.mines_coordinates.every( x => x[0] !== +i || x[1] !== +j) && this.treats_coordinates.every( x => x[0] !== +i || x[1] !== +j)){
 				ctx.fillText( this.symbols[this.policy_data[i][j]] ,this.margin + (+i+0.5)*this.box_width, this.margin + (+j+0.5)*this.box_height);
 			// }
+			}
 				// this.rc.rectangle( this.margin + (+i)*this.box_width, this.margin + (+j)*this.box_height, this.box_width, this.box_height,  { fill: cm_array[i][j] });
 			}
 		}	

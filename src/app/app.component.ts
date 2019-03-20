@@ -25,6 +25,7 @@ export class AppComponent {
   treats_coordinates = [];
   learningRate = 0.01;
   epsilon = 0.2;
+  gamma=0.8;
   learner;
   mode:string;
   policy;
@@ -56,10 +57,11 @@ export class AppComponent {
   }
 
   generateWorld(){
+    this.policy = undefined;
     this.initializeWorld();
     this.initializeMineAndTreat();
     let world = new Gridworld( this.size, this.mines_coordinates, this.treats_coordinates);
-    this.learner = new QLearner(world);
+    this.learner = new QLearner(world, this.learningRate, this.epsilon, this.gamma);
   }
 
   initializeMineAndTreat(){

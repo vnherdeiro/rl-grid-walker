@@ -193,13 +193,13 @@ export class Gridworld extends StateMachine {
  ******************************/
 
 export class QLearner {
-  constructor(world) {
+  constructor(world, alpha=0.04, epsilon=0.2, gamma=0.8) {
     // Algorithm configuration. Won't lie, these numbers
     // are usually magic, and take trying out different values
     // before you settle on good ones
-    this.alpha = 0.04;    // step size (how much progress we're actually making)
-    this.epsilon = 0.2;  // probabily of taking a random action instead of the optimal one
-    this.gamma = 0.8;    // discount rate. it trades off the importance of sooner vs later rewards.
+    this.alpha = alpha;    // step size (how much progress we're actually making)
+    this.epsilon = epsilon;  // probabily of taking a random action instead of the optimal one
+    this.gamma = gamma;    // discount rate. it trades off the importance of sooner vs later rewards.
     
     this.world = world;
     this.reset();
