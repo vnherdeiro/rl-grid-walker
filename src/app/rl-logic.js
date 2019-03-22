@@ -1,47 +1,47 @@
 /******************************
  * State, actions, transitions
  ******************************/
-class State {
-  constructor(name, id) {
-    this.name = name;
-    this.id = id;
-  }
-}
+ class State {
+   constructor(name, id) {
+     this.name = name;
+     this.id = id;
+   }
+ }
 
-class Action {
-  constructor(name, id) {
-    this.name = name;
-    this.id = id;
-  }
-}
+ class Action {
+   constructor(name, id) {
+     this.name = name;
+     this.id = id;
+   }
+ }
 
-class Transition {
+ class Transition {
    constructor(fromState, action, toState, reward = 0) {
      this.action = action;
      this.fromState = fromState;
      this.toState = toState;
      this.reward = reward;
    }
-}
+ }
 
 /******************************
  * State Machine
  ******************************/
-class StateMachine {
-  constructor(states, actions) {
-    this.states = states || [];
-    this.actions = actions || [];
-    this.transitions = {};
-    this.goalState = 0;
-  }
-  
-  addTransition(fromState, toState, action, reward) {
-    let transitionsForState = this.transitions[fromState] || {};
-    transitionsForState[this.actions[action].name] = new Transition(this.states[fromState], this.actions[action], this.states[toState], reward || 0);
-    this.transitions[fromState] = transitionsForState;
-  }
-  
-  takeStep(state, action) {  
+ class StateMachine {
+   constructor(states, actions) {
+     this.states = states || [];
+     this.actions = actions || [];
+     this.transitions = {};
+     this.goalState = 0;
+   }
+
+   addTransition(fromState, toState, action, reward) {
+     let transitionsForState = this.transitions[fromState] || {};
+     transitionsForState[this.actions[action].name] = new Transition(this.states[fromState], this.actions[action], this.states[toState], reward || 0);
+     this.transitions[fromState] = transitionsForState;
+   }
+
+   takeStep(state, action) {  
     // Can this state take this action?
     const transition = this.transitions[state][action];
     if (transition) {
@@ -120,7 +120,7 @@ export class Gridworld extends StateMachine {
     } else {
       this.currentState = this.takeRandomStep(this.currentState);
     }
-  
+
     if (this.goalState.includes(this.currentState)) {
       this.score++;
       // Start in a random state to make it interesting.
@@ -192,8 +192,8 @@ export class Gridworld extends StateMachine {
  to do in every step.
  ******************************/
 
-export class QLearner {
-  constructor(world, alpha=0.04, epsilon=0.2, gamma=0.8) {
+ export class QLearner {
+   constructor(world, alpha=0.04, epsilon=0.2, gamma=0.8) {
     // Algorithm configuration. Won't lie, these numbers
     // are usually magic, and take trying out different values
     // before you settle on good ones
@@ -228,26 +228,41 @@ export class QLearner {
       }
     }
   }
-  
-  train(steps = 100000) {
-    // Initialize S: Pick a random starting state.
+
+  trainStart(duration = 3000, isTraining){
+    isTraining.next(true);
     this.currentState = this.world.pickRandomState();
     this._sequence = [];
+    this._running = true;
+    this.timer = setTimeout( () => this.trainStep());
+    setTimeout( () => {this.trainStop(); isTraining.next(false)}, duration);
+    // let resolve = () => {this.trainStop();};
+    // await new Promise(resolve => setTimeout(resolve, duration));
+  }
+  
+  trainStop(){
+    this._running = false;
+    clearTimeout( this.timer);
+    console.log('done training');
+  }
+
+  trainStep() {
+    // Initialize S: Pick a random starting state.
     
-     console.log(`training ${steps} steps`);
+     // console.log(`training ${steps} steps`);
     // Take steps until you reach the goal.
-    while (steps--) {
-      this.currentState = this.step(this.currentState);
-      // For debugs, if you want to see what's happening.
-      this._sequence.push(this.currentState);
-      
-      if (this.world.goalState.includes(this.currentState) || this.world.mineState.includes( this.currentState)) {
-        // console.log('goal reached in training, restarting', this.currentState === this.world.goalState, this.currentState === this.world.mineState);
-        this.currentState = this.world.pickRandomState();
-        this._sequence = [];
-      }
+    this.currentState = this.step(this.currentState);
+    // For debugs, if you want to see what's happening.
+    this._sequence.push(this.currentState);
+    
+    if (this.world.goalState.includes(this.currentState) || this.world.mineState.includes( this.currentState)) {
+      // console.log('goal reached in training, restarting', this.currentState === this.world.goalState, this.currentState === this.world.mineState);
+      this.currentState = this.world.pickRandomState();
+      this._sequence = [];
     }
-    console.log('done training')
+    if( this._running){
+      this.timer = setTimeout( () => this.trainStep());
+    }
   }
   
   step(state) {
@@ -257,7 +272,7 @@ export class QLearner {
     // Take the action A, and get a reward R and the next state S'.
     const actionName = this.world.actions[bestAction].name;
     const transition = this.world.transitions[state][actionName];
-  
+
     // Update the value function according to this formula:
     // Q(S, A) = Q(S, A) + α[R + γ max_a Q(S', a) − Q(S, A)]
     // This basically means that if this action is good, then the next action

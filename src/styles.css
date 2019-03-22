@@ -9,3 +9,15 @@
  input{
 	text-align: right;
 }
+
+ h2{
+ 	font-size: larger!important;
+ }
+
+ input{
+ 	font-size: 93%!important;
+ }
+
+ mat-button ::ng-deep {
+ 	font-size: larger;
+ }

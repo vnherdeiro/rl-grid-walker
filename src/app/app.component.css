@@ -9,4 +9,9 @@ button :focus{
  /*NOT WORKING*/
  .mat-stroked-button ::ng-deep{
  	transition: none!important;
+    font-size: larger;
+ }
+
+ .pink{
+ 	color: pink;
  }
