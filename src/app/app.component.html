@@ -3,15 +3,15 @@
 
 <h2> Grid walker (RL educated) </h2>
 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="40px" >
-	<div>
+<div>
 <p> Grid linear size: <input type='number' min='3' (keydown.enter)='generateWorld()' [(ngModel)]='size'> </p>
 <p> Number of treats: <input type='number' min='1' (keydown.enter)='generateWorld()' [(ngModel)]='ntreats'> </p>
 <p> Number of mines: <input type='number' min='1' (keydown.enter)='generateWorld()' [(ngModel)]='nmines'> </p>
 </div>
 <div>
-<p> Learning rate: <input type='number' step='0.01' min='0' (keydown.enter)='generateWorld()' [(ngModel)]='learningRate'> </p>
-<p> Exploration-exploitation ε: <input type='number' step='0.01' min='0' (keydown.enter)='generateWorld()' [(ngModel)]='epsilon'> </p>
-<p> Discount rate: <input type='number' step='0.01' min='0' (keydown.enter)='generateWorld()' [(ngModel)]='gamma'> </p>
+<p> Learning rate: <input type='number' step='0.01' min='0' (keydown.enter)='generateWorld()' [(ngModel)]='learningRate' (change)='changeLearningParams()'> </p>
+<p> Exploration-exploitation ε: <input type='number' step='0.01' min='0' (keydown.enter)='generateWorld()' (change)='changeLearningParams()' [(ngModel)]='epsilon'> </p>
+<p> Discount rate: <input type='number' step='0.01' min='0' (keydown.enter)='generateWorld()' [(ngModel)]='gamma' (change)='changeLearningParams()'> </p>
 </div>
 </div>
 <p>

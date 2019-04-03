@@ -76,8 +76,8 @@
 export class Gridworld extends StateMachine {
   constructor(size, mines_coordinates, treats_coordinates) {
     super();
-    this.mines_coordinates = mines_coordinates.map( x => x[0]*size + x[1]);
-    this.treats_coordinates = treats_coordinates.map( x => x[0]*size + x[1]);
+    this.mines_coordinates = mines_coordinates.map( x => x[1]*size + x[0]);
+    this.treats_coordinates = treats_coordinates.map( x => x[1]*size + x[0]);
     this.reset();
     this.init(size);
   }
@@ -172,6 +172,7 @@ export class Gridworld extends StateMachine {
         }
       }
     }
+    // console.log( this.transitions);
   }
 }
 
@@ -229,12 +230,12 @@ export class Gridworld extends StateMachine {
     }
   }
 
-  trainStart(duration = 3000, isTraining){
+  trainStart(duration=3000, batch=10000, isTraining){
     isTraining.next(true);
     this.currentState = this.world.pickRandomState();
     this._sequence = [];
     this._running = true;
-    this.timer = setTimeout( () => this.trainStep());
+    this.timer = setTimeout( () => this.trainStep(batch));
     setTimeout( () => {this.trainStop(); isTraining.next(false)}, duration);
     // let resolve = () => {this.trainStop();};
     // await new Promise(resolve => setTimeout(resolve, duration));
@@ -243,29 +244,33 @@ export class Gridworld extends StateMachine {
   trainStop(){
     this._running = false;
     clearTimeout( this.timer);
-    console.log('done training');
+    // console.log('done training');
   }
 
-  trainStep() {
+  trainStep(batch) {
     // Initialize S: Pick a random starting state.
     
      // console.log(`training ${steps} steps`);
+     for(let dummy = 0; dummy < batch; dummy++){
     // Take steps until you reach the goal.
     this.currentState = this.step(this.currentState);
+    // console.log( this.currentState);
     // For debugs, if you want to see what's happening.
     this._sequence.push(this.currentState);
     
     if (this.world.goalState.includes(this.currentState) || this.world.mineState.includes( this.currentState)) {
       // console.log('goal reached in training, restarting', this.currentState === this.world.goalState, this.currentState === this.world.mineState);
       this.currentState = this.world.pickRandomState();
+      // console.log('reset');
       this._sequence = [];
     }
-    if( this._running){
-      this.timer = setTimeout( () => this.trainStep());
-    }
   }
-  
-  step(state) {
+  if( this._running){
+    this.timer = setTimeout( () => this.trainStep(batch));
+  }
+}
+
+step(state) {
     // Choose the best action from this state according to the policy.
     const bestAction = this.pickEpsilonGreedyAction(this.Q[state]);
 
@@ -290,10 +295,12 @@ export class Gridworld extends StateMachine {
     // This is the difference between the value of our place in the world and now.
     
     const stepValue = this.alpha * (learntReward - this.Q[state][bestAction]) 
+    // console.log( stepValue);
     this.Q[state][bestAction] += stepValue; 
     
     // Go to the next state.
-    //this.alpha -= 0.001;
+    // this.alpha = this.alpha*0.999;
+    // this.alpha -= 0.001;
     return transition.toState.id;
   }
   

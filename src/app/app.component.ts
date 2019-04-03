@@ -8,6 +8,7 @@ var randRange = (min, max) => Math.floor(Math.random() * (max-min) + min)
 // generates 2d array filled with zeroes
 var zeros = (w, h, v = 0) => Array.from(new Array(h), _ => Array(w).fill(v));
 
+const max_size = 25;
 
 @Component({
   selector: 'app-root',
@@ -18,11 +19,11 @@ export class AppComponent {
   title = 'rl-grid-walker';
   array:number[][];
   size:number = 9;
-  nmines:number = 1;
+  nmines:number = 0;
   ntreats:number = 1;
   mines_coordinates = [];
   treats_coordinates = [];
-  learningRate = 0.01;
+  learningRate = 0.04;
   epsilon = 0.2;
   gamma = 0.8;
   learner;
@@ -37,6 +38,7 @@ export class AppComponent {
   }
 
   initializeWorld(){
+    this.size = Math.min( max_size, this.size);
     let size = this.size;
     this.array = [];
     for( let i = 0; i < size; i++){
@@ -55,6 +57,14 @@ export class AppComponent {
     this.initializeMineAndTreat();
     let world = new Gridworld( this.size, this.mines_coordinates, this.treats_coordinates);
     this.learner = new QLearner(world, this.learningRate, this.epsilon, this.gamma);
+  }
+
+  changeLearningParams(){
+    if (this.learner){
+      this.learner.alpha = this.learningRate;    // step size (how much progress we're actually making)
+      this.learner.epsilon = this.epsilon;  // probabily of taking a random action instead of the optimal one
+      this.learner.gamma = this.gamma;    // discount rate. it trades off the importance of sooner vs later rewards.
+    }
   }
 
   initializeMineAndTreat(){
@@ -91,7 +101,7 @@ export class AppComponent {
         let row = Math.floor( +key/this.size);
         let col = +key %this.size;
         // translated_policy[row] = translated_policy[row] || [];
-        translated_policy[row][col] = +policy[key];
+        translated_policy[col][row] = +policy[key];
       }
       // console.log( translated_policy)
       this.policy = translated_policy;
@@ -103,8 +113,10 @@ export class AppComponent {
 
   trainMode(){
     if( this.learner){
-      let training_duration = 2000;
-      this.learner.trainStart(training_duration, this.isTraining);
+      // 1mins training
+      let training_duration = 1000*60*5;
+      // let training_duration = 1000*60*1;
+      this.learner.trainStart(training_duration, 10000, this.isTraining);
       // setTimeout( () => {this.updatePolicy();}, 1000);
     }
     else{

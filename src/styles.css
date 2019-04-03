@@ -4,6 +4,7 @@
 
 * {
 	font-family: 'Gloria Hallelujah', cursive;
+	/*font-family: 'Roboto', cursive;*/
 }
 
  input{
@@ -16,6 +17,11 @@
 
  input{
  	font-size: 93%!important;
+ 	border: none!important;
+ }
+
+ input:focus ::ng-deep{
+ 	border: none!important;
  }
 
  mat-button ::ng-deep {
