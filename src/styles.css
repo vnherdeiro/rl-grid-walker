@@ -17,7 +17,7 @@
 
  input{
  	font-size: 93%!important;
- 	border: none!important;
+ 	/*border: none!important;*/
  }
 
 /* input:focus ::ng-deep{

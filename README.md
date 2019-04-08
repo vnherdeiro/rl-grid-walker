@@ -18,6 +18,12 @@ The grid and the learned policy can be visualized.
 
 This project was generated with [Angular 7](https://github.com/angular/angular-cli), and visualization uses [roughjs](https://github.com/pshihn/rough).
 
+
+------
+
+
+Play with me [here](https://vnherdeiro.github.io/rl-grid-walker/), or locally:
+
 Build dependencies with:
 ```
 npm install
