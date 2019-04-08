@@ -14,6 +14,9 @@ The grid and the learned policy can be visualized.
 
 ![Settings panel](rl-grid-vis.png)
 
+
+_Note: in this example we see that the policy is trapped in a local optimal, judging by some first neighbour arrows not pointing directly at the treats._
+
 ------
 
 This project was generated with [Angular 7](https://github.com/angular/angular-cli), and visualization uses [roughjs](https://github.com/pshihn/rough).

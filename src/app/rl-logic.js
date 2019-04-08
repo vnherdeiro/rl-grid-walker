@@ -1,6 +1,10 @@
 /******************************
  * State, actions, transitions
  ******************************/
+ function clamp(num, min, max) {
+  return num <= min ? min : num >= max ? max : num;
+}
+
  class State {
    constructor(name, id) {
      this.name = name;
@@ -224,7 +228,10 @@ export class Gridworld extends StateMachine {
       for (let a in transitions) {
         const transition = transitions[a]
         // Goal state?
-        if (this.world.goalState.includes( transition.toState.id ) || this.world.mineState.includes( transition.toState.id )) {
+        if (this.world.goalState.includes( transition.toState.id )) {
+          this.Q[s][transition.action.id] = 1;
+        }
+        else if (this.world.mineState.includes( transition.toState.id )) {
           this.Q[s][transition.action.id] = 0;
         } else {
           this.Q[s][transition.action.id] = Math.random();
@@ -307,6 +314,10 @@ step(state) {
     const stepValue = this.alpha * (learntReward - this.Q[state][bestAction]) 
     // console.log( stepValue);
     this.Q[state][bestAction] += stepValue; 
+    // clip value below maybe!!
+    let min = 0;
+    let max = 1;
+    this.Q[state][bestAction] = clamp( this.Q[state][bestAction], min, max);
     
     // Go to the next state.
     // this.alpha = this.alpha*0.999;

@@ -139,8 +139,8 @@ export class AppComponent {
       // this.learner.trainStart(training_duration, 10000, this.isTraining);
       if ( this.trainingState.getValue() === 0){
         // console.log('starting training')
-          //update policy visualization when training
-          this.policy_update_sub = interval(2000).subscribe( x => this.updatePolicy());
+          //update policy visualization regularly when training
+          this.policy_update_sub = interval(1500).subscribe( x => this.updatePolicy());
           this.learner.trainStart(10000, this.trainingState);
         }
       else{
