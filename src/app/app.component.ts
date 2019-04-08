@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { Gridworld, QLearner} from './rl-logic.js';
 import {MatSnackBar} from '@angular/material';
-import { BehaviorSubject} from 'rxjs';
+import { BehaviorSubject, Observable} from 'rxjs';
+import { map } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 var randRange = (min, max) => Math.floor(Math.random() * (max-min) + min)
@@ -28,9 +29,20 @@ export class AppComponent {
   gamma = 0.8;
   learner;
   policy;
-  isTraining = new BehaviorSubject<boolean>(false);
+  trainingState = new BehaviorSubject<Number>(0);
+  trainButtonMsg:Observable<string>;
 
   constructor(private snackBar: MatSnackBar){
+    this.trainButtonMsg = this.trainingState.pipe( map( x => {
+      if (x === 0){
+        return 'Train';
+      }
+      if (x === 1){
+        return 'Stopping...';
+      }
+      return 'Stop';
+    })
+    );
   }
 
   printInBar(message:string, duration:number=1000){
@@ -112,16 +124,24 @@ export class AppComponent {
   }
 
   trainMode(){
-    if( this.learner){
+    // if( this.learner){
       // 1mins training
-      let training_duration = 1000*60*5;
+      // let training_duration = 1000*60*5;
       // let training_duration = 1000*60*1;
-      this.learner.trainStart(training_duration, 10000, this.isTraining);
+      // this.learner.trainStart(training_duration, 10000, this.isTraining);
+      if ( this.trainingState.getValue() === 0){
+        console.log('starting training')
+          this.learner.trainStart(100000000, this.trainingState);
+        }
+      else{
+          this.trainingState.next(1);
+          this.learner.trainStop();
+      }
       // setTimeout( () => {this.updatePolicy();}, 1000);
-    }
-    else{
-      this.printInBar('Generate grid first', 500);
-    }
+    // }
+    // else{
+    //   this.printInBar('Generate grid first', 500);
+    // }
     // console.log('done training')
   }
 }

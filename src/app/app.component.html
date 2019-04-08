@@ -1,6 +1,8 @@
 
 <router-outlet></router-outlet>
 
+<h1> {{ trainingState | async}}</h1>
+
 <h2> Grid walker (RL educated) </h2>
 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="40px" >
 <div>
@@ -16,7 +18,8 @@
 </div>
 <p>
 <button mat-stroked-button (click)='generateWorld()'> Generate </button>
-<button mat-stroked-button [disabled]='!learner || (isTraining | async)' (click)='trainMode()'> {{(isTraining | async) ? 'Training...' : 'Train'}} </button>
+<button mat-stroked-button [disabled]='!learner || (trainingState | async) === 1' (click)='trainMode()'> {{trainButtonMsg | async}} </button>
+<!-- <button mat-stroked-button [disabled]='!learner || (isTraining | async)' (click)='trainMode()'> {{(isTraining | async) ? 'Training...' : 'Train'}} </button> -->
 <button mat-stroked-button (click)='updatePolicy()'> Update policy vis </button>
 </p>
 <app-draw-box [array]='array' [mines_coordinates]='mines_coordinates' [treats_coordinates]='treats_coordinates' [policy]='policy'>

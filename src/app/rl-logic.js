@@ -194,6 +194,7 @@ export class Gridworld extends StateMachine {
  ******************************/
 
  export class QLearner {
+
    constructor(world, alpha=0.04, epsilon=0.2, gamma=0.8) {
     // Algorithm configuration. Won't lie, these numbers
     // are usually magic, and take trying out different values
@@ -201,7 +202,9 @@ export class Gridworld extends StateMachine {
     this.alpha = alpha;    // step size (how much progress we're actually making)
     this.epsilon = epsilon;  // probabily of taking a random action instead of the optimal one
     this.gamma = gamma;    // discount rate. it trades off the importance of sooner vs later rewards.
-    
+
+    this.trainingState = undefined;
+
     this.world = world;
     this.reset();
   }
@@ -230,13 +233,15 @@ export class Gridworld extends StateMachine {
     }
   }
 
-  trainStart(duration=3000, batch=10000, isTraining){
-    isTraining.next(true);
+  trainStart(batch, trainingState){
+  // trainStart(duration=3000, batch=10000, isTraining){
+    this.trainingState = trainingState;
+    this.trainingState.next( 2);
     this.currentState = this.world.pickRandomState();
     this._sequence = [];
     this._running = true;
     this.timer = setTimeout( () => this.trainStep(batch));
-    setTimeout( () => {this.trainStop(); isTraining.next(false)}, duration);
+    // setTimeout( () => {this.trainStop(); isTraining.next(false)}, duration);
     // let resolve = () => {this.trainStop();};
     // await new Promise(resolve => setTimeout(resolve, duration));
   }
@@ -244,12 +249,14 @@ export class Gridworld extends StateMachine {
   trainStop(){
     this._running = false;
     clearTimeout( this.timer);
+    this.trainingState.next(0);
     // console.log('done training');
   }
 
   trainStep(batch) {
     // Initialize S: Pick a random starting state.
     
+     console.log(`training step`);
      // console.log(`training ${steps} steps`);
      for(let dummy = 0; dummy < batch; dummy++){
     // Take steps until you reach the goal.
@@ -267,6 +274,9 @@ export class Gridworld extends StateMachine {
   }
   if( this._running){
     this.timer = setTimeout( () => this.trainStep(batch));
+  }
+  else{
+    this.trainingState.next(0);
   }
 }
 
