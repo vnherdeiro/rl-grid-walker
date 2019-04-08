@@ -4,9 +4,9 @@
 <h2> Grid walker (RL educated) </h2>
 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="40px" >
 <div>
-<p> Grid linear size: <input type='number' min='3' (keydown.enter)='generateWorld()' [(ngModel)]='size'> </p>
-<p> Number of treats: <input type='number' min='1' (keydown.enter)='generateWorld()' [(ngModel)]='ntreats'> </p>
-<p> Number of mines: <input type='number' min='1' (keydown.enter)='generateWorld()' [(ngModel)]='nmines'> </p>
+<p> Grid linear size: <input type='number' min='3' [disabled]='(trainingState | async) > 0' (keydown.enter)='generateWorld()' [(ngModel)]='size'> </p>
+<p> Number of treats: <input type='number' min='1' [disabled]='(trainingState | async) > 0' (keydown.enter)='generateWorld()' [(ngModel)]='ntreats'> </p>
+<p> Number of mines: <input type='number' min='1' [disabled]='(trainingState | async) > 0' (keydown.enter)='generateWorld()' [(ngModel)]='nmines'> </p>
 </div>
 <div>
 <p> Learning rate: <input type='number' step='0.01' min='0' (keydown.enter)='learner ? "" : generateWorld()' [(ngModel)]='learningRate' (change)='changeLearningParams()'> </p>
@@ -15,10 +15,10 @@
 </div>
 </div>
 <p>
-<button mat-stroked-button (click)='generateWorld()'> Generate </button>
+<button mat-stroked-button [disabled]='(trainingState | async) > 0' (click)='generateWorld()'> Generate </button>
 <button mat-stroked-button [disabled]='!learner || (trainingState | async) === 1' (click)='trainMode()'> {{trainButtonMsg | async}} </button>
 <!-- <button mat-stroked-button [disabled]='!learner || (isTraining | async)' (click)='trainMode()'> {{(isTraining | async) ? 'Training...' : 'Train'}} </button> -->
-<button mat-stroked-button (click)='updatePolicy()'> Update policy vis </button>
+<!-- <button mat-stroked-button (click)='updatePolicy()'> Update policy vis </button> -->
 </p>
 <app-draw-box [array]='array' [mines_coordinates]='mines_coordinates' [treats_coordinates]='treats_coordinates' [policy]='policy'>
 </app-draw-box>

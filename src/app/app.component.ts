@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Gridworld, QLearner} from './rl-logic.js';
-import {MatSnackBar} from '@angular/material';
-import { BehaviorSubject, Observable} from 'rxjs';
-import { map } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material';
+import { BehaviorSubject, Observable, interval, combineLatest} from 'rxjs';
+import { map, pairwise, filter, tap, mapTo } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 var randRange = (min, max) => Math.floor(Math.random() * (max-min) + min)
@@ -31,9 +31,11 @@ export class AppComponent {
   policy;
   trainingState = new BehaviorSubject<Number>(0);
   trainButtonMsg:Observable<string>;
+  policy_update_sub;
+  endOfTrainingObs;
 
   constructor(private snackBar: MatSnackBar){
-    this.trainButtonMsg = this.trainingState.pipe( map( x => {
+    this.trainButtonMsg = this.trainingState.asObservable().pipe( map( x => {
       if (x === 0){
         return 'Train';
       }
@@ -43,6 +45,10 @@ export class AppComponent {
       return 'Stop';
     })
     );
+    // console.log('setting them up ');
+    this.endOfTrainingObs = this.trainingState.pipe( pairwise(), filter( values => values[0] !== 0 && values[1] === 0));
+    //update policy vis when training is finished
+    this.endOfTrainingObs.subscribe( x => this.updatePolicy());
   }
 
   printInBar(message:string, duration:number=1000){
@@ -65,6 +71,7 @@ export class AppComponent {
 
   generateWorld(){
     this.policy = undefined;
+    //if training, stop training
     this.initializeWorld();
     this.initializeMineAndTreat();
     let world = new Gridworld( this.size, this.mines_coordinates, this.treats_coordinates);
@@ -106,6 +113,7 @@ export class AppComponent {
   updatePolicy(){
   	// this.mode = this.mode === 'test' ? '' : 'test';
     // drawing policy
+    // console.log('updating policy')
     if( this.learner){
       let policy = this.learner.policy();
       let translated_policy = zeros(this.size, this.size);
@@ -130,11 +138,14 @@ export class AppComponent {
       // let training_duration = 1000*60*1;
       // this.learner.trainStart(training_duration, 10000, this.isTraining);
       if ( this.trainingState.getValue() === 0){
-        console.log('starting training')
+        // console.log('starting training')
+          //update policy visualization when training
+          this.policy_update_sub = interval(2000).subscribe( x => this.updatePolicy());
           this.learner.trainStart(10000, this.trainingState);
         }
       else{
           this.trainingState.next(1);
+          this.policy_update_sub.unsubscribe();
           this.learner.trainStop();
       }
       // setTimeout( () => {this.updatePolicy();}, 1000);
