@@ -20,9 +20,9 @@
  	border: none!important;
  }
 
- input:focus ::ng-deep{
+/* input:focus ::ng-deep{
  	border: none!important;
- }
+ }*/
 
  mat-button ::ng-deep {
  	font-size: larger;
