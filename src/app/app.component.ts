@@ -131,7 +131,7 @@ export class AppComponent {
       // this.learner.trainStart(training_duration, 10000, this.isTraining);
       if ( this.trainingState.getValue() === 0){
         console.log('starting training')
-          this.learner.trainStart(100000000, this.trainingState);
+          this.learner.trainStart(10000, this.trainingState);
         }
       else{
           this.trainingState.next(1);

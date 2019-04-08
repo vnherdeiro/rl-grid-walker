@@ -256,7 +256,7 @@ export class Gridworld extends StateMachine {
   trainStep(batch) {
     // Initialize S: Pick a random starting state.
     
-     console.log(`training step`);
+     // console.log(`training step`);
      // console.log(`training ${steps} steps`);
      for(let dummy = 0; dummy < batch; dummy++){
     // Take steps until you reach the goal.
