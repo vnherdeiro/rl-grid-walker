@@ -112,6 +112,8 @@ THE SOFTWARE.
 
 @angular/material/button
 
+@angular/material/checkbox
+
 @angular/material/snack-bar
 
 @angular/platform-browser
