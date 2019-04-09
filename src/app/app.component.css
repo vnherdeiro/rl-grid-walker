@@ -6,7 +6,6 @@ button :focus{
  	outline: none!important;
  }
 
- /*NOT WORKING*/
  .mat-stroked-button ::ng-deep{
  	transition: none!important;
     font-size: larger;
@@ -14,4 +13,12 @@ button :focus{
 
  .pink{
  	color: pink;
+ }
+
+ .buttonRow{
+ 	width: 350px;
+ }
+
+ .doubleButtonRow{
+ 	max-width: 700px;
  }

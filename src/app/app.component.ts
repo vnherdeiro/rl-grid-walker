@@ -18,10 +18,10 @@ const max_size = 25;
 })
 export class AppComponent {
   title = 'rl-grid-walker';
-  array:number[][];
-  size:number = 9;
-  nmines:number = 0;
-  ntreats:number = 1;
+  Qarray:number[][] = undefined;
+  size:number = 25; //9;
+  nmines:number = 150;//0;
+  ntreats:number = 11;//1;
   mines_coordinates = [];
   treats_coordinates = [];
   learningRate = 0.04;
@@ -33,6 +33,7 @@ export class AppComponent {
   trainButtonMsg:Observable<string>;
   policy_update_sub;
   endOfTrainingObs;
+  displayQ = true;
 
   constructor(private snackBar: MatSnackBar){
     this.trainButtonMsg = this.trainingState.asObservable().pipe( map( x => {
@@ -58,15 +59,7 @@ export class AppComponent {
   initializeWorld(){
     this.size = Math.min( max_size, this.size);
     let size = this.size;
-    this.array = [];
-    for( let i = 0; i < size; i++){
-      let temp = [];
-      for( let j = 0; j < size; j++){
-        temp.push( 0);
-        // temp.push( Math.random());
-      }
-      this.array.push( temp);
-    } 
+    this.Qarray = zeros(this.size, this.size);
   }
 
   generateWorld(){
@@ -111,10 +104,8 @@ export class AppComponent {
 
 
   updatePolicy(){
-  	// this.mode = this.mode === 'test' ? '' : 'test';
-    // drawing policy
-    // console.log('updating policy')
     if( this.learner){
+      this.updateQarray();
       let policy = this.learner.policy();
       let translated_policy = zeros(this.size, this.size);
       for( let key in Object.keys(policy)){
@@ -123,7 +114,6 @@ export class AppComponent {
         // translated_policy[row] = translated_policy[row] || [];
         translated_policy[col][row] = +policy[key];
       }
-      // console.log( translated_policy)
       this.policy = translated_policy;
     }
     else{
@@ -131,15 +121,19 @@ export class AppComponent {
     }
   }
 
-  trainMode(){
+
+  updateQarray(){
     // if( this.learner){
-      // 1mins training
-      // let training_duration = 1000*60*5;
-      // let training_duration = 1000*60*1;
-      // this.learner.trainStart(training_duration, 10000, this.isTraining);
+      for( let key in Object.keys(this.learner.Q)){
+        let row = Math.floor( +key/this.size);
+        let col = +key %this.size;
+        this.Qarray[col][row] = +Math.max( ...(Object.values( this.learner.Q[key]) as number[]));
+    }
+  // }
+  }
+
+  trainMode(){
       if ( this.trainingState.getValue() === 0){
-        // console.log('starting training')
-          //update policy visualization regularly when training
           this.policy_update_sub = interval(1500).subscribe( x => this.updatePolicy());
           this.learner.trainStart(10000, this.trainingState);
         }
@@ -148,11 +142,6 @@ export class AppComponent {
           this.policy_update_sub.unsubscribe();
           this.learner.trainStop();
       }
-      // setTimeout( () => {this.updatePolicy();}, 1000);
-    // }
-    // else{
-    //   this.printInBar('Generate grid first', 500);
-    // }
-    // console.log('done training')
   }
+
 }

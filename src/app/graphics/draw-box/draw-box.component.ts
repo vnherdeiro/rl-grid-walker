@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 // const rough = require('roughjs');
 import {RoughCanvas} from 'roughjs/bin/canvas';
 import * as colormap from 'colormap';
+import * as _ from 'lodash';
 
 
 @Component({
@@ -18,6 +19,7 @@ export class DrawBoxComponent implements OnInit {
 	@Input('treats_coordinates') treats_coordinates:number[][];
 	@Input('policy') policy_data:number[][];
 	@Input('colormap') cm_name = 'density';
+	@Input('displayQ') displayQ:boolean;
 	n_rows:number;
 	n_cols:number;
 	canvas_width:number = 700;
@@ -28,11 +30,6 @@ export class DrawBoxComponent implements OnInit {
 	box_height:number;
 	rc;
 	cm;
-	// direction2path = {'up':'M 50,5 95,97.5 5,97.5 z',
-	// 'left':"M 5,50 97.5,5 97.5,95 Z",
-	// 'right':"M 95,50 5,95 5,5 z",
-	// 'down':"M 50,5 95,97.5 5,97.5 Z",
-	// };
 	symbols = ['↑','↓','←','→'];
 
 
@@ -87,13 +84,16 @@ export class DrawBoxComponent implements OnInit {
 
 		for(let i in this.array){
 			for(let j in this.array[i]){
+				if( this.mines_coordinates.every( x => x[0] !== +i || x[1] !== +j) && this.treats_coordinates.every( x => x[0] !== +i || x[1] !== +j)){
 				this.rc.rectangle( this.margin + (+i)*this.box_width, this.margin + (+j)*this.box_height, this.box_width, this.box_height,  {
 					fillStyle: 'cross-hatch',
 					roughness: 2.5,
 					fillWeight: 1.5,
-					fill: cm_array[i][j] });
+					fill: this.displayQ ? cm_array[i][j]: '#ffffff'
+				});
 				// this.rc.rectangle( this.margin + (+i)*this.box_width, this.margin + (+j)*this.box_height, this.box_width, this.box_height,  { fill: cm_array[i][j] });
 			}
+		}
 		}
 		// drawing the mine
 		for( let mine_coordinate of this.mines_coordinates){
@@ -119,6 +119,7 @@ export class DrawBoxComponent implements OnInit {
 		ctx.textAlign = "center"; 
 		ctx.textBaseline = "middle"; 
 		ctx.font = "23px Arial"
+		ctx.fillStyle = this.displayQ ? 'darkorange' : 'black';
 		for(let i in this.policy_data){
 			for(let j in this.policy_data[i]){
 				// this.rc.path( this.margin + (+i)*this.box_width, this.margin + (+j)*this.box_height, this.box_width, this.box_height,  {

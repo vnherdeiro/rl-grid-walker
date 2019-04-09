@@ -315,8 +315,8 @@ step(state) {
     // console.log( stepValue);
     this.Q[state][bestAction] += stepValue; 
     // clip value below maybe!!
-    let min = 0;
-    let max = 1;
+    const min = 0;
+    const max = 1;
     this.Q[state][bestAction] = clamp( this.Q[state][bestAction], min, max);
     
     // Go to the next state.

@@ -11,6 +11,7 @@ import { DrawBoxComponent } from './graphics/draw-box/draw-box.component';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule,
           MatSnackBarModule,
+          MatCheckboxModule,
         } from '@angular/material';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -26,6 +27,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     FormsModule,
     MatButtonModule,
     MatSnackBarModule,
+    MatCheckboxModule,
     FlexLayoutModule,
     BrowserAnimationsModule,
   ],

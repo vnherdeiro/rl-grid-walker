@@ -13,11 +13,18 @@
 
  h2{
  	font-size: larger!important;
+    margin-left: 1rem;
  }
 
  input{
  	font-size: 93%!important;
- 	/*border: none!important;*/
+ 	float: right!important;
+ 	width: 111px;
+ 	border: 2px solid black;
+ }
+
+ input:disabled{
+ 	border: 1px dashed lightgrey!important;
  }
 
 /* input:focus ::ng-deep{
