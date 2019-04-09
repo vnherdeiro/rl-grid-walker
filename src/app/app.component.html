@@ -4,14 +4,14 @@
 <h1> Grid walker (RL educated) </h1>
 <div class='doubleButtonRow' fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="40px" >
 <div class='buttonRow'>
-<p> Grid linear size: <input type='number' min='3' [disabled]='(trainingState | async) > 0' (keydown.enter)='generateWorld()' [(ngModel)]='size'> </p>
-<p> Number of treats: <input type='number' min='1' [disabled]='(trainingState | async) > 0' (keydown.enter)='generateWorld()' [(ngModel)]='ntreats'> </p>
-<p> Number of mines: <input type='number' min='1' [disabled]='(trainingState | async) > 0' (keydown.enter)='generateWorld()' [(ngModel)]='nmines'> </p>
+<p> Grid linear size: <input title='Square grid will be of size XxX' type='number' min='3' [disabled]='(trainingState | async) > 0' (keydown.enter)='generateWorld()' [(ngModel)]='size'> </p>
+<p> Number of treats: <input title='Number of reward sites to reach on the grid' type='number' min='1' [disabled]='(trainingState | async) > 0' (keydown.enter)='generateWorld()' [(ngModel)]='ntreats'> </p>
+<p> Number of mines: <input title='Number of sites to be avoided' type='number' min='1' [disabled]='(trainingState | async) > 0' (keydown.enter)='generateWorld()' [(ngModel)]='nmines'> </p>
 </div>
 <div class='buttonRow'>
-<p> Learning rate: <input type='number' step='0.01' min='0' (keydown.enter)='learner ? "" : generateWorld()' [(ngModel)]='learningRate' (change)='changeLearningParams()'> </p>
-<p> Exploration-exploitation ε: <input type='number' step='0.01' min='0' (keydown.enter)='learner ? "" : generateWorld()' (change)='changeLearningParams()' [(ngModel)]='epsilon'> </p>
-<p> Discount rate: <input type='number' step='0.01' min='0' (keydown.enter)='learner ? "" : generateWorld()' [(ngModel)]='gamma' (change)='changeLearningParams()'> </p>
+<p> Learning rate: <input title='Learning rate in the value iteration update' type='number' step='0.01' min='0' (keydown.enter)='learner ? "" : generateWorld()' [(ngModel)]='learningRate' (change)='changeLearningParams()'> </p>
+<p> Exploration-exploitation ε: <input title='Probability of picking random action over best action (to current knowledge) in training' type='number' step='0.01' min='0' (keydown.enter)='learner ? "" : generateWorld()' (change)='changeLearningParams()' [(ngModel)]='epsilon'> </p>
+<p> Discount rate: <input title='Forward decay rate in Bellman equation' type='number' step='0.01' min='0' (keydown.enter)='learner ? "" : generateWorld()' [(ngModel)]='gamma' (change)='changeLearningParams()'> </p>
 </div>
 </div>
 
@@ -24,15 +24,6 @@
 <mat-checkbox [hidden]='!learner' [(ngModel)]="displayQ">Show Q Heatmap</mat-checkbox>
 </div>
 </div>
-
-<!-- <p>
-<button mat-stroked-button [disabled]='(trainingState | async) > 0' (click)='generateWorld()'> Generate </button>
-<button mat-stroked-button [disabled]='!learner || (trainingState | async) === 1' (click)='trainMode()'> {{trainButtonMsg | async}} </button>
-</p>
-<p>
-<mat-checkbox [hidden]='!learner' [(ngModel)]="displayQ">Show Q Heatmap</mat-checkbox>
-</p> -->
-
 
 <app-draw-box [displayQ]='displayQ' [array]='Qarray' [mines_coordinates]='mines_coordinates' [treats_coordinates]='treats_coordinates' [policy]='policy'>
 </app-draw-box>
