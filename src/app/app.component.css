@@ -9,7 +9,14 @@ button :focus{
  .mat-stroked-button ::ng-deep{
  	transition: none!important;
     font-size: larger;
+    border: 2px solid black;
+    border-radius: 0px;
+    margin: 2px;
  }
+
+ .mat-stroked-button:disabled ::ng-deep{
+    border:1px solid lightgrey!important;
+ } 
 
  .pink{
  	color: pink;
