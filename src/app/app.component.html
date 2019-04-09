@@ -1,7 +1,7 @@
 
 <router-outlet></router-outlet>
 
-<h2> Grid walker (RL educated) </h2>
+<h1> Grid walker (RL educated) </h1>
 <div class='doubleButtonRow' fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="40px" >
 <div class='buttonRow'>
 <p> Grid linear size: <input type='number' min='3' [disabled]='(trainingState | async) > 0' (keydown.enter)='generateWorld()' [(ngModel)]='size'> </p>
