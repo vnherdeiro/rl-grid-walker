@@ -21,9 +21,9 @@
 <button mat-stroked-button [disabled]='!learner || (trainingState | async) === 1' (click)='trainMode()'> {{trainButtonMsg | async}} </button>
 </div>
 <div>
-<mat-checkbox [hidden]='!learner' [(ngModel)]="displayQ">Show Q Heatmap</mat-checkbox>
+<mat-checkbox labelPosition='after' [hidden]='!learner' [(ngModel)]="displayQ">Show Q Heatmap</mat-checkbox>
 </div>
 </div>
 
-<app-draw-box [displayQ]='displayQ' [array]='Qarray' [mines_coordinates]='mines_coordinates' [treats_coordinates]='treats_coordinates' [policy]='policy'>
+<app-draw-box [displayQ]='displayQ' [Qarray]='Qarray' [mines_coordinates]='mines_coordinates' [treats_coordinates]='treats_coordinates' [policy]='policy'>
 </app-draw-box>

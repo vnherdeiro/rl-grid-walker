@@ -14,7 +14,7 @@ import * as _ from 'lodash';
 export class DrawBoxComponent implements OnInit {
 
 	@ViewChild('canvas') canvas:ElementRef;
-	@Input('array') array:number[][];
+	@Input('Qarray') Qarray:number[][];
 	@Input('mines_coordinates') mines_coordinates:number[][];
 	@Input('treats_coordinates') treats_coordinates:number[][];
 	@Input('policy') policy_data:number[][];
@@ -58,12 +58,12 @@ export class DrawBoxComponent implements OnInit {
 
 	ngOnChanges(){
 		// clearing
-		if(this.array){
-		this.n_rows = this.array.length;
-		this.n_cols = this.array[0].length;
-		this.box_width = Math.round( (this.canvas_width - 2*this.margin)/this.n_cols);
-		this.box_height = Math.round( (this.canvas_height - 2*this.margin)/this.n_rows);
-	}
+		if(this.Qarray){
+			this.n_rows = this.Qarray.length;
+			this.n_cols = this.Qarray[0].length;
+			this.box_width = Math.round( (this.canvas_width - 2*this.margin)/this.n_cols);
+			this.box_height = Math.round( (this.canvas_height - 2*this.margin)/this.n_rows);
+		}
 		let ctx = this.canvas.nativeElement.getContext("2d");
 		ctx.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
 		if( this.cm){
@@ -76,41 +76,41 @@ export class DrawBoxComponent implements OnInit {
 
 	drawArray(){
 		//rescale array to cm
-		let max = Math.max(...this.array['flat']())*(1+1e-3); //sligth offset 
+		let max = Math.max(...this.Qarray['flat']())*(1+1e-3); //sligth offset 
 		let min = 0;
 		let rescaleFunction = val => this.cm[Math.floor( this.n_shades* (val - min)/(max-min))];
-		let cm_array = this.array.map( row => row.map(rescaleFunction));
+		let cm_Qarray = this.Qarray.map( row => row.map(rescaleFunction));
 		// console.log( cm_array);
 
-		for(let i in this.array){
-			for(let j in this.array[i]){
+		for(let i in this.Qarray){
+			for(let j in this.Qarray[i]){
 				if( this.mines_coordinates.every( x => x[0] !== +i || x[1] !== +j) && this.treats_coordinates.every( x => x[0] !== +i || x[1] !== +j)){
-				this.rc.rectangle( this.margin + (+i)*this.box_width, this.margin + (+j)*this.box_height, this.box_width, this.box_height,  {
-					fillStyle: 'cross-hatch',
-					roughness: 2.5,
-					fillWeight: 1.5,
-					fill: this.displayQ ? cm_array[i][j]: '#ffffff'
-				});
-				// this.rc.rectangle( this.margin + (+i)*this.box_width, this.margin + (+j)*this.box_height, this.box_width, this.box_height,  { fill: cm_array[i][j] });
+					this.rc.rectangle( this.margin + (+i)*this.box_width, this.margin + (+j)*this.box_height, this.box_width, this.box_height,  {
+						fillStyle: 'cross-hatch',
+						roughness: 2.5,
+						fillWeight: 1.5,
+						fill: this.displayQ ? cm_Qarray[i][j]: '#ffffff'
+					});
+					// this.rc.rectangle( this.margin + (+i)*this.box_width, this.margin + (+j)*this.box_height, this.box_width, this.box_height,  { fill: cm_array[i][j] });
+				}
 			}
-		}
 		}
 		// drawing the mine
 		for( let mine_coordinate of this.mines_coordinates){
-		this.rc.rectangle( this.margin + mine_coordinate[0]*this.box_width, this.margin + mine_coordinate[1]*this.box_height, this.box_width, this.box_height,  {
-			fillStyle: 'cross-hatch',
-			roughness: 2.5,
-			fillWeight: 1.5,
-			fill: 'black'});
-	}
+			this.rc.rectangle( this.margin + mine_coordinate[0]*this.box_width, this.margin + mine_coordinate[1]*this.box_height, this.box_width, this.box_height,  {
+				fillStyle: 'cross-hatch',
+				roughness: 2.5,
+				fillWeight: 1.5,
+				fill: 'black'});
+		}
 		// drawing the target
 		for( let treat_coordinate of this.treats_coordinates){
-		this.rc.rectangle( this.margin + treat_coordinate[0]*this.box_width, this.margin + treat_coordinate[1]*this.box_height, this.box_width, this.box_height,  {
-			fillStyle: 'cross-hatch',
-			roughness: 2.5,
-			fillWeight: 1.5,
-			fill: 'gold'});
-	}
+			this.rc.rectangle( this.margin + treat_coordinate[0]*this.box_width, this.margin + treat_coordinate[1]*this.box_height, this.box_width, this.box_height,  {
+				fillStyle: 'cross-hatch',
+				roughness: 2.5,
+				fillWeight: 1.5,
+				fill: 'gold'});
+		}
 	}
 
 	drawPolicy(){
@@ -118,23 +118,24 @@ export class DrawBoxComponent implements OnInit {
 		let ctx = this.canvas.nativeElement.getContext("2d");
 		ctx.textAlign = "center"; 
 		ctx.textBaseline = "middle"; 
-		ctx.font = "23px Arial"
+		ctx.font = ''+ (this.box_width - 4) + "px Arial";
+		// ctx.font = "23px Arial"
 		ctx.fillStyle = this.displayQ ? 'darkorange' : 'black';
 		for(let i in this.policy_data){
 			for(let j in this.policy_data[i]){
 				// this.rc.path( this.margin + (+i)*this.box_width, this.margin + (+j)*this.box_height, this.box_width, this.box_height,  {
-				// 	fillStyle: 'cross-hatch',
-				// 	roughness: 2.5,
-				// 	fillWeight: 1.5,
-				// 	fill: cm_array[i][j] });
-				// if ( ([+i,+j] as number[] != this.mine_position) && ([+i,+j] as number[] != this.treat_position)){
-				if ( this.mines_coordinates.every( x => x[0] !== +i || x[1] !== +j) && this.treats_coordinates.every( x => x[0] !== +i || x[1] !== +j)){
-				ctx.fillText( this.symbols[this.policy_data[i][j]] ,this.margin + (+i+0.5)*this.box_width, this.margin + (+j+0.5)*this.box_height);
-			// }
+					// 	fillStyle: 'cross-hatch',
+					// 	roughness: 2.5,
+					// 	fillWeight: 1.5,
+					// 	fill: cm_array[i][j] });
+					// if ( ([+i,+j] as number[] != this.mine_position) && ([+i,+j] as number[] != this.treat_position)){
+						if ( this.mines_coordinates.every( x => x[0] !== +i || x[1] !== +j) && this.treats_coordinates.every( x => x[0] !== +i || x[1] !== +j)){
+							ctx.fillText( this.symbols[this.policy_data[i][j]] ,this.margin + (+i+0.5)*this.box_width, this.margin + (+j+0.5)*this.box_height);
+							// }
+						}
+						// this.rc.rectangle( this.margin + (+i)*this.box_width, this.margin + (+j)*this.box_height, this.box_width, this.box_height,  { fill: cm_array[i][j] });
+					}
+				}	
 			}
-				// this.rc.rectangle( this.margin + (+i)*this.box_width, this.margin + (+j)*this.box_height, this.box_width, this.box_height,  { fill: cm_array[i][j] });
-			}
-		}	
-	}
 
-}
+		}

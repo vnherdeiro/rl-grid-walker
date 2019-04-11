@@ -9,7 +9,7 @@ var randRange = (min, max) => Math.floor(Math.random() * (max-min) + min)
 // generates 2d array filled with zeroes
 var zeros = (w, h, v = 0) => Array.from(new Array(h), _ => Array(w).fill(v));
 
-const max_size = 25;
+const max_size = 50;
 
 @Component({
   selector: 'app-root',
@@ -82,6 +82,10 @@ export class AppComponent {
   initializeMineAndTreat(){
     // generate random position for the mine and the treat
     let size = this.size;
+
+    // forcing sanity of the number of mines + treats
+    this.ntreats = Math.min( this.ntreats, size*size);
+    this.nmines = Math.min( this.nmines, size*size - this.ntreats);
 
     // generating the mines and treats
     this.mines_coordinates = [];
