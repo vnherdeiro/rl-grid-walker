@@ -132,20 +132,20 @@ export class AppComponent {
         let row = Math.floor( +key/this.size);
         let col = +key %this.size;
         this.Qarray[col][row] = +Math.max( ...(Object.values( this.learner.Q[key]) as number[]));
-    }
-  // }
-  }
-
-  trainMode(){
-      if ( this.trainingState.getValue() === 0){
-          this.policy_update_sub = interval(1500).subscribe( x => this.updatePolicy());
-          this.learner.trainStart(10000, this.trainingState);
-        }
-      else{
-          this.trainingState.next(1);
-          this.policy_update_sub.unsubscribe();
-          this.learner.trainStop();
       }
-  }
+      // }
+    }
 
-}
+    trainMode(){
+      if ( this.trainingState.getValue() === 0){
+        this.policy_update_sub = interval(1500).subscribe( x => this.updatePolicy());
+        this.learner.trainStart(10000, this.trainingState);
+      }
+      else{
+        this.trainingState.next(1);
+        this.policy_update_sub.unsubscribe();
+        this.learner.trainStop();
+      }
+    }
+
+  }
